@@ -8,7 +8,7 @@ function send(req,res,file,status){
   fs.readFile(file,(e,buf)=>{
     if(e){res.writeHead(500);return res.end('Server error')}
     const h={'Content-Type':MIME[ext]||'application/octet-stream','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin',
-      'Cache-Control':ext==='.html'?'no-cache':'public, max-age=86400'};
+      'Cache-Control':(ext==='.html'||ext==='.css'||ext==='.js')?'no-cache':'public, max-age=86400'};
     if(GZ.has(ext)&&/\bgzip\b/.test(req.headers['accept-encoding']||'')){buf=zlib.gzipSync(buf);h['Content-Encoding']='gzip';h['Vary']='Accept-Encoding'}
     h['Content-Length']=buf.length;res.writeHead(status||200,h);res.end(req.method==='HEAD'?undefined:buf);
   });
