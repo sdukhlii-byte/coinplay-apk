@@ -165,3 +165,30 @@ table.cmp{min-width:0;font-size:14px}
 @media(max-width:340px){.big{font-size:15px;padding:14px 10px}}
 nav{align-items:center}nav a{display:flex;align-items:center}@media(max-width:820px){nav{align-items:stretch}}
 .factsnote{margin:-14px 0 22px;text-align:center}
+
+.soc{display:flex;flex-wrap:wrap;margin:0 -5px 6px}
+.soc a{display:inline-flex;align-items:center;margin:5px;padding:9px 16px;min-height:44px;border:1px solid #835DFD;border-radius:999px;color:#fff;text-decoration:none;font-weight:600;background:#ffffff10}
+.soc a span{margin-left:8px}.soc a:hover{background:#835DFD55}
+.soc.big{justify-content:center}.soc.foot{margin-bottom:12px}
+
+.hicons{display:flex;align-items:center;margin-left:auto;margin-right:6px}
+.hicons a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;color:#C1AEFE;margin-left:2px}
+.hicons a:hover{color:#FFE145}
+@media(max-width:820px){.hicons{display:none}}
+.hd>*+*{margin-left:12px}.hd .hicons{margin-left:auto}
+.hsoc{display:flex;align-items:center;justify-content:flex-start;margin-top:14px;color:#C1AEFE;font-size:14px}
+.hsoc span{margin-right:8px}
+.hsoc a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:6px;border-radius:50%;border:1px solid #835DFD;background:#ffffff10;color:#fff}
+.hsoc a:hover{background:#835DFD66}
+@media(max-width:860px){.hsoc{justify-content:center;flex-wrap:wrap}}
+.scards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;text-align:left}
+@media(max-width:820px){.scards{grid-template-columns:1fr}}
+.scard{display:flex;align-items:center;background:#2F0B76;border:1px solid #4110A4;border-radius:18px;padding:16px;text-decoration:none;color:#fff;transition:.2s}
+.scard:hover{border-color:#C969FF;transform:translateY(-3px)}
+.scard .sico{flex:none;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#4110A4,#835DFD);display:flex;align-items:center;justify-content:center;margin-right:14px}
+.scard .sico svg{width:26px;height:26px}
+.scard .stx{display:block;flex:1;min-width:0}
+.scard .stx b{display:block;font-size:18px}.scard .stx i{display:block;font-style:normal;color:#FFE145;font-size:14px}
+.scard .stx em{display:block;font-style:normal;color:#C1AEFE;font-size:13px;margin-top:2px}
+.scard .sgo{flex:none;margin-left:10px;font-weight:700;color:#FFE145;font-size:14px;text-transform:uppercase}
+@media(hover:none){.scard:hover{transform:none}}

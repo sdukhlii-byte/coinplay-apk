@@ -8,7 +8,7 @@ function all(sel){return Array.prototype.slice.call(document.querySelectorAll(se
 function wp(u){if(!C.PASS_PARAMS||!location.search)return u;try{var x=new URL(u,location.href);qs.forEach(function(v,k){if(!x.searchParams.has(k))x.searchParams.set(k,v)});return x.toString()}catch(e){return u}}
 function track(ev){if(!C.TRACK_URL)return;var id=qs.get("clickid")||qs.get("click_id")||qs.get("subid")||"";var u=C.TRACK_URL.replace("{clickid}",encodeURIComponent(id)).replace("{event}",ev);try{if(navigator.sendBeacon)navigator.sendBeacon(u);else(new Image()).src=u}catch(e){}}
 try{
-var map=[["js-apk","APK_URL","apk"],["js-web","WEB_URL","web"],["js-tg","TG_URL","tg"]];
+var map=[["js-apk","APK_URL","apk"],["js-web","WEB_URL","web"],["js-tg","TG_URL","tg"],["js-x","X_URL","x"],["js-ig","IG_URL","ig"]];
 map.forEach(function(m){all("."+m[0]).forEach(function(a){
   if(C[m[1]]){a.href=wp(C[m[1]])}
   a.addEventListener("click",function(){track(m[2]);if(m[2]==="apk")showAfter()});
