@@ -6,9 +6,17 @@ var ua=navigator.userAgent||"";
 var CID="";
 try{
   CID=qs.get("visitor_id")||qs.get("subid")||qs.get("clickid")||qs.get("click_id")||qs.get("cid")||"";
+  var RAW=CID,FRESH=false;
   if(CID&&!/^[\w.\-~]{1,128}$/.test(CID))CID="";
-  if(CID){try{sessionStorage.setItem("cp_cid",CID)}catch(e){}try{localStorage.setItem("cp_cid",CID)}catch(e){}}
+  if(CID){FRESH=true;try{sessionStorage.setItem("cp_cid",CID)}catch(e){}try{localStorage.setItem("cp_cid",CID)}catch(e){}}
   else{try{CID=sessionStorage.getItem("cp_cid")||localStorage.getItem("cp_cid")||""}catch(e){}}
+  /* diagnostics: tell our server whether the ad network really passed a click id */
+  if(C.TRACK_URL){
+    var diag=null;
+    if(RAW&&!FRESH)diag=["macro",RAW];
+    else if(FRESH){var pk="cp_pv_"+CID,done=false;try{done=!!sessionStorage.getItem(pk);sessionStorage.setItem(pk,"1")}catch(e){}if(!done)diag=["pv",CID]}
+    if(diag){var du=C.TRACK_URL.replace("{clickid}",encodeURIComponent(diag[1])).replace("{event}",diag[0]);(new Image()).src=du}
+  }
 }catch(e){}
 var isAndroid=/Android/i.test(ua);
 var isIOS=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTouchPoints>1);

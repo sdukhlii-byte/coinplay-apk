@@ -58,7 +58,9 @@ function handleTrack(req,res,u){
     if(!/^[\w.\-~]{1,128}$/.test(cid)||!EV.hasOwnProperty(pev)){res.writeHead(400);return res.end('bad request')}
     const r=relay(pev,cid,q.get('payout')||'');res.writeHead(200,{'Content-Type':'application/json'});return res.end(JSON.stringify(r));
   }
-  if(!/^[\w.\-~]{1,128}$/.test(cid)){console.log('[t] ignored: no valid cid, event='+ev)}
+  if(ev==='macro'){console.log('[t] WARNING unreplaced macro in URL, visitor_id='+String(cid).slice(0,40)+' (open test links with a real value, e.g. ?visitor_id=TEST1)')}
+  else if(ev==='pv'&&/^[\w.\-~]{1,128}$/.test(cid)){console.log('[t] pageview with click id cid='+cid)}
+  else if(!/^[\w.\-~]{1,128}$/.test(cid)){console.log('[t] ignored: no valid cid, event='+ev)}
   else if(!EV.hasOwnProperty(ev)||ev==='reg'||ev==='ftd'||ev==='install'){console.log('[t] ignored event='+ev+' cid='+cid)}
   else{console.log('[t] received',ev,'cid='+cid);relay(ev,cid,'')}
   res.writeHead(204,{'Cache-Control':'no-store'});res.end();
