@@ -39,10 +39,10 @@ function fire(url,tries,cb){
 }
 function relay(ev,cid,payout){
   const g=EV[ev];
-  if(!g||g==='off'){return {ok:false,why:'event off'}}
-  if(!E.PROP_AID&&!E.PROP_URL){return {ok:false,why:'PROP_AID/PROP_TID not set'}}
+  if(!g||g==='off'){console.log('[pb] skip',ev,'cid='+cid,'(event off)');return {ok:false,why:'event off'}}
+  if(!E.PROP_URL&&!(E.PROP_AID&&E.PROP_TID)){console.log('[pb] skip',ev,'cid='+cid,'(PROP_AID / PROP_TID not set in Railway Variables)');return {ok:false,why:'PROP_AID/PROP_TID not set'}}
   const key=cid+'|'+g;
-  if(seen.has(key))return {ok:false,why:'duplicate'};
+  if(seen.has(key)){console.log('[pb] skip',ev,'cid='+cid,'(duplicate)');return {ok:false,why:'duplicate'}}
   seen.set(key,Date.now());if(seen.size>100000)seen.delete(seen.keys().next().value);
   const url=TPL.replace('{aid}',encodeURIComponent(E.PROP_AID||'')).replace('{pid}',encodeURIComponent(E.PROP_PID||'')).replace('{tid}',encodeURIComponent(E.PROP_TID||''))
     .replace('{cid}',encodeURIComponent(cid)).replace('{goalq}',g==='main'?'':'&goal='+encodeURIComponent(g)).replace('{payoutq}',payout?'&payout='+encodeURIComponent(payout):'');
@@ -58,7 +58,9 @@ function handleTrack(req,res,u){
     if(!/^[\w.\-~]{1,128}$/.test(cid)||!EV.hasOwnProperty(pev)){res.writeHead(400);return res.end('bad request')}
     const r=relay(pev,cid,q.get('payout')||'');res.writeHead(200,{'Content-Type':'application/json'});return res.end(JSON.stringify(r));
   }
-  if(/^[\w.\-~]{1,128}$/.test(cid)&&EV.hasOwnProperty(ev)&&ev!=='reg'&&ev!=='ftd'&&ev!=='install')relay(ev,cid,'');
+  if(!/^[\w.\-~]{1,128}$/.test(cid)){console.log('[t] ignored: no valid cid, event='+ev)}
+  else if(!EV.hasOwnProperty(ev)||ev==='reg'||ev==='ftd'||ev==='install'){console.log('[t] ignored event='+ev+' cid='+cid)}
+  else{console.log('[t] received',ev,'cid='+cid);relay(ev,cid,'')}
   res.writeHead(204,{'Cache-Control':'no-store'});res.end();
 }
 http.createServer((req,res)=>{

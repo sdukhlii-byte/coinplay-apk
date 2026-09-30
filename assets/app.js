@@ -12,6 +12,7 @@ try{
 }catch(e){}
 var isAndroid=/Android/i.test(ua);
 var isIOS=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTouchPoints>1);
+try{var fo=qs.get("os");if(fo==="android"){isAndroid=true;isIOS=false}else if(fo==="ios"){isIOS=true;isAndroid=false}}catch(e){}
 function all(sel){return Array.prototype.slice.call(document.querySelectorAll(sel))}
 function wp(u){var sp=C.SUBID_PARAM&&CID;if(!sp&&(!C.PASS_PARAMS||!location.search))return u;try{var x=new URL(u,location.href);if(sp)x.searchParams.set(C.SUBID_PARAM,CID);if(C.PASS_PARAMS&&location.search)qs.forEach(function(v,k){if(!x.searchParams.has(k))x.searchParams.set(k,v)});return x.toString()}catch(e){return u}}
 function track(ev){if(!C.TRACK_URL||!CID)return;var u=C.TRACK_URL.replace("{clickid}",encodeURIComponent(CID)).replace("{event}",encodeURIComponent(ev));try{if(!(navigator.sendBeacon&&navigator.sendBeacon(u)))(new Image()).src=u}catch(e){try{(new Image()).src=u}catch(e2){}}}
