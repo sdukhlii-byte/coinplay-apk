@@ -6,7 +6,8 @@ window.CFG = {
   X_URL:   "https://x.com/thecoinplay",
   IG_URL:  "https://www.instagram.com/coinplayofficial/",
   PASS_PARAMS: false,                      // пробрасывать clickid, sub1 и др. во все кнопки
-  TRACK_URL: "",                           // опц. пиксель клика: https://track.example.com/c?cid={clickid}&e={event}
+  TRACK_URL: "/t?e={event}&cid={clickid}", // отстук кликов на наш сервер (он шлёт S2S-постбэк в Propeller). Пусто = выключено
+  SUBID_PARAM: "",                         // имя sub-параметра партнёрки для передачи click-id (напр. "sub1"), пусто = не передавать
   BONUS_TEXT: "", BONUS_LINK_TEXT: "Claim it in the app →", // верхняя плашка с бонусом, пустое = скрыта. Только реальный бонус!
   VERSION: "", SIZE: "", UPDATED: "",      // данные APK, пустое = скрыто
   FACTS: [

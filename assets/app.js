@@ -3,16 +3,23 @@ var C=window.CFG||{},L=window.I18N||{},qs;
 function tx(k,d){return L[k]||d}
 try{qs=new URLSearchParams(location.search)}catch(e){qs={get:function(){return null},forEach:function(){}}}
 var ua=navigator.userAgent||"";
+var CID="";
+try{
+  CID=qs.get("visitor_id")||qs.get("subid")||qs.get("clickid")||qs.get("click_id")||qs.get("cid")||"";
+  if(CID&&!/^[\w.\-~]{1,128}$/.test(CID))CID="";
+  if(CID){try{sessionStorage.setItem("cp_cid",CID)}catch(e){}try{localStorage.setItem("cp_cid",CID)}catch(e){}}
+  else{try{CID=sessionStorage.getItem("cp_cid")||localStorage.getItem("cp_cid")||""}catch(e){}}
+}catch(e){}
 var isAndroid=/Android/i.test(ua);
 var isIOS=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTouchPoints>1);
 function all(sel){return Array.prototype.slice.call(document.querySelectorAll(sel))}
-function wp(u){if(!C.PASS_PARAMS||!location.search)return u;try{var x=new URL(u,location.href);qs.forEach(function(v,k){if(!x.searchParams.has(k))x.searchParams.set(k,v)});return x.toString()}catch(e){return u}}
-function track(ev){if(!C.TRACK_URL)return;var id=qs.get("clickid")||qs.get("click_id")||qs.get("subid")||"";var u=C.TRACK_URL.replace("{clickid}",encodeURIComponent(id)).replace("{event}",ev);try{if(navigator.sendBeacon)navigator.sendBeacon(u);else(new Image()).src=u}catch(e){}}
+function wp(u){var sp=C.SUBID_PARAM&&CID;if(!sp&&(!C.PASS_PARAMS||!location.search))return u;try{var x=new URL(u,location.href);if(sp)x.searchParams.set(C.SUBID_PARAM,CID);if(C.PASS_PARAMS&&location.search)qs.forEach(function(v,k){if(!x.searchParams.has(k))x.searchParams.set(k,v)});return x.toString()}catch(e){return u}}
+function track(ev){if(!C.TRACK_URL||!CID)return;var u=C.TRACK_URL.replace("{clickid}",encodeURIComponent(CID)).replace("{event}",encodeURIComponent(ev));try{if(!(navigator.sendBeacon&&navigator.sendBeacon(u)))(new Image()).src=u}catch(e){try{(new Image()).src=u}catch(e2){}}}
 try{
 var map=[["js-apk","APK_URL","apk"],["js-web","WEB_URL","web"],["js-tg","TG_URL","tg"],["js-x","X_URL","x"],["js-ig","IG_URL","ig"]];
 map.forEach(function(m){all("."+m[0]).forEach(function(a){
   if(C[m[1]]){a.href=wp(C[m[1]])}
-  a.addEventListener("click",function(){track(m[2]);if(m[2]==="apk")showAfter()});
+  a.addEventListener("click",function(){var ev=m[2];if(ev==="apk"&&!isAndroid)ev=isIOS?"web":"other";track(ev);if(m[2]==="apk")showAfter()});
   if(m[2]!=="apk"){a.target="_blank";a.rel="noopener"}
 })});
 [["f-ver",C.VERSION],["f-size",C.SIZE],["f-upd",C.UPDATED]].forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;if(p[1])el.textContent=p[1];else{el.style.display="none";if(el.previousElementSibling)el.previousElementSibling.style.display="none"}});
@@ -32,7 +39,6 @@ if(isIOS){
   all(".js-apk").forEach(function(a){
     a.href=wp(C.WEB_URL||"#");a.target="_blank";a.rel="noopener";
     a.textContent=a.classList.contains("hbtn")?tx("play_short","Play"):tx("play_long","▶ Play now");
-    a.addEventListener("click",function(){track("web")});
   });
   var sm=document.querySelector(".sticky small");if(sm)sm.innerHTML=tx("sticky_web","CoinPlay<br>Play in browser");
   if(note)note.innerHTML=tx("ios_note",'No download needed. Play in Safari and <a href="ios.html" style="color:#FFE145">add to your home screen</a>.');
