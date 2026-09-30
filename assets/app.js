@@ -14,7 +14,6 @@ map.forEach(function(m){all("."+m[0]).forEach(function(a){
   a.addEventListener("click",function(){track(m[2]);if(m[2]==="apk")showAfter()});
   if(m[2]!=="apk"){a.target="_blank";a.rel="noopener"}
 })});
-all(".js-mail").forEach(function(a){a.href="mailto:"+C.CONTACT_EMAIL;a.textContent=C.CONTACT_EMAIL});
 [["f-ver",C.VERSION],["f-size",C.SIZE],["f-upd",C.UPDATED]].forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;if(p[1])el.textContent=p[1];else{el.style.display="none";if(el.previousElementSibling)el.previousElementSibling.style.display="none"}});
 var fb=document.getElementById("facts");
 if(fb){if(C.FACTS&&C.FACTS.length){C.FACTS.forEach(function(f){var d=document.createElement("div");d.className="fact";var s=document.createElement("small"),b=document.createElement("strong");s.textContent=f.label;b.textContent=f.value;d.appendChild(s);d.appendChild(b);fb.appendChild(d)});var nt=document.createElement("p");nt.className="small center factsnote";nt.textContent="18+. Bonus terms and wagering requirements apply. Check the current terms on the CoinPlay website before you deposit.";fb.parentNode.insertBefore(nt,fb.nextSibling)}else fb.style.display="none"}
