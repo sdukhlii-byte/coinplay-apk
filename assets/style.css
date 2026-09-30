@@ -204,3 +204,16 @@ nav{align-items:center}nav a{display:flex;align-items:center}@media(max-width:82
 .sl img{display:block;width:100%;height:auto;border-radius:11px;background:#2F0B76}
 .sl span{display:block;font-weight:700;font-size:13px;line-height:1.2;color:#fff;padding:8px 4px 4px}
 @media(max-width:720px){.sl-grid{grid-template-columns:repeat(2,1fr)}.stag{display:none}}
+
+/* language switcher and suggestion bar */
+.langs{display:inline-block;margin-left:10px;white-space:nowrap}
+.langs a{display:inline-block;min-width:34px;text-align:center;font-size:12px;font-weight:700;padding:4px 7px;margin:0 2px;border:1px solid var(--line);border-radius:999px;color:#e6dcff;text-decoration:none}
+.langs a.on{background:#FFE145;color:#09001B;border-color:#FFE145}
+footer .langs{display:block;margin:12px 0 0}
+.langbar{display:-webkit-flex;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;background:#2F0B76;border-bottom:1px solid #4110A4;padding:8px 12px;font-size:14px;color:#fff;text-align:center}
+.langbar span{margin-right:10px}
+.langbar a{display:inline-block;background:#FFE145;color:#09001B;font-weight:800;border-radius:999px;padding:6px 14px;margin:2px 8px;text-decoration:none}
+.langbar button{background:none;border:0;color:#fff;font-size:24px;line-height:1;min-width:44px;min-height:44px;cursor:pointer}
+nav .langs a,footer .langs a{display:inline-block;padding:0 8px;min-height:36px;line-height:34px;border:1px solid var(--line);color:#e6dcff}
+nav .langs a.on,footer .langs a.on{background:#FFE145;color:#09001B;border-color:#FFE145}
+@media(max-width:820px){nav .langs{display:block;padding:12px 16px;margin:0;border-top:1px solid var(--line)}}

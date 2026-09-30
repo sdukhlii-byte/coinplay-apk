@@ -1,5 +1,6 @@
 (function(){
-var C=window.CFG||{},qs;
+var C=window.CFG||{},L=window.I18N||{},qs;
+function tx(k,d){return L[k]||d}
 try{qs=new URLSearchParams(location.search)}catch(e){qs={get:function(){return null},forEach:function(){}}}
 var ua=navigator.userAgent||"";
 var isAndroid=/Android/i.test(ua);
@@ -16,7 +17,7 @@ map.forEach(function(m){all("."+m[0]).forEach(function(a){
 })});
 [["f-ver",C.VERSION],["f-size",C.SIZE],["f-upd",C.UPDATED]].forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;if(p[1])el.textContent=p[1];else{el.style.display="none";if(el.previousElementSibling)el.previousElementSibling.style.display="none"}});
 var fb=document.getElementById("facts");
-if(fb){if(C.FACTS&&C.FACTS.length){C.FACTS.forEach(function(f){var d=document.createElement("div");d.className="fact";var s=document.createElement("small"),b=document.createElement("strong");s.textContent=f.label;b.textContent=f.value;d.appendChild(s);d.appendChild(b);fb.appendChild(d)});var nt=document.createElement("p");nt.className="small center factsnote";nt.textContent="18+. Bonus terms and wagering requirements apply. Check the current terms on the CoinPlay website before you deposit.";fb.parentNode.insertBefore(nt,fb.nextSibling)}else fb.style.display="none"}
+if(fb){var FF=L.facts?L.facts.map(function(p){return{label:p[0],value:p[1]}}):C.FACTS;if(FF&&FF.length){FF.forEach(function(f){var d=document.createElement("div");d.className="fact";var s=document.createElement("small"),b=document.createElement("strong");s.textContent=f.label;b.textContent=f.value;d.appendChild(s);d.appendChild(b);fb.appendChild(d)});var nt=document.createElement("p");nt.className="small center factsnote";nt.textContent=tx("factsnote","18+. Bonus terms and wagering requirements apply. Check the current terms on the CoinPlay website before you deposit.");fb.parentNode.insertBefore(nt,fb.nextSibling)}else fb.style.display="none"}
 var bn=document.getElementById("bonus");
 if(bn&&C.BONUS_TEXT){bn.style.display="block";bn.textContent=C.BONUS_TEXT+" ";var l=document.createElement("a");l.className="js-apk";l.href=wp(C.APK_URL);l.textContent=C.BONUS_LINK_TEXT||"";l.addEventListener("click",function(){track("apk");showAfter()});bn.appendChild(l)}
 var b=document.getElementById("burger"),nv=document.getElementById("nav");
@@ -30,17 +31,17 @@ if(isIOS){
   document.documentElement.className+=" is-ios";
   all(".js-apk").forEach(function(a){
     a.href=wp(C.WEB_URL||"#");a.target="_blank";a.rel="noopener";
-    a.textContent=a.classList.contains("hbtn")?"Play":"▶ Play now";
+    a.textContent=a.classList.contains("hbtn")?tx("play_short","Play"):tx("play_long","▶ Play now");
     a.addEventListener("click",function(){track("web")});
   });
-  var sm=document.querySelector(".sticky small");if(sm)sm.innerHTML="CoinPlay<br>Play in browser";
-  if(note)note.innerHTML='No download needed. Play in Safari and <a href="ios.html" style="color:#FFE145">add to your home screen</a>.';
-  var ld=document.getElementById("lead");if(ld)ld.textContent="Play CoinPlay right in Safari: slots, live casino and sports with crypto payments. Add it to your home screen to open it like an app.";
+  var sm=document.querySelector(".sticky small");if(sm)sm.innerHTML=tx("sticky_web","CoinPlay<br>Play in browser");
+  if(note)note.innerHTML=tx("ios_note",'No download needed. Play in Safari and <a href="ios.html" style="color:#FFE145">add to your home screen</a>.');
+  var ld=document.getElementById("lead");if(ld)ld.textContent=tx("ios_lead","Play CoinPlay right in Safari: slots, live casino and sports with crypto payments. Add it to your home screen to open it like an app.");
   all(".mhero .b2").forEach(function(x){x.style.display="none"});
 }else if(!isAndroid){
   document.documentElement.className+=" is-desktop";
-  if(note)note.textContent="The APK is for Android phones. Open this page on your phone, or play in the browser now.";
-}else if(note){note.textContent="Android 8.0+ · Chrome may warn about the file: tap “Download anyway”."}
+  if(note)note.textContent=tx("desk_note","The APK is for Android phones. Open this page on your phone, or play in the browser now.");
+}else if(note){note.textContent=tx("android_note","Android 8.0+ · Chrome may warn about the file: tap “Download anyway”.")}
 }catch(e){}
 
 /* sticky bar: show only after the hero CTA scrolls away */
@@ -57,10 +58,36 @@ function showAfter(){
   if(shown||!isAndroid)return;shown=true;
   try{
     var d=document.createElement("div");d.className="after";
-    d.innerHTML='<div class="afterbox"><button class="afterx" aria-label="Close">×</button><h3>Download started ✓</h3><ol><li>If Chrome warns, tap <b>Download anyway</b>.</li><li>Open the file. If asked, tap <b>Settings</b> and allow installs from this browser.</li><li>Tap <b>Install</b>, then <b>Open</b> CoinPlay.</li></ol><p>Nothing happening? <a href="install-guide.html">See the install guide</a></p></div>';
+    d.innerHTML=tx("after_html",'<div class="afterbox"><button class="afterx" aria-label="Close">×</button><h3>Download started ✓</h3><ol><li>If Chrome warns, tap <b>Download anyway</b>.</li><li>Open the file. If asked, tap <b>Settings</b> and allow installs from this browser.</li><li>Tap <b>Install</b>, then <b>Open</b> CoinPlay.</li></ol><p>Nothing happening? <a href="install-guide.html">See the install guide</a></p></div>');
+
     document.body.appendChild(d);
     d.querySelector(".afterx").addEventListener("click",function(){d.parentNode.removeChild(d)});
     d.addEventListener("click",function(e){if(e.target===d)d.parentNode.removeChild(d)});
   }catch(e){}
 }
+
+/* language: remember choice, ?lang= redirect, suggest PT/ES to matching browsers */
+try{
+var alt=L.alt||{},cur=L.lang||"en",store=null;
+try{store=window.localStorage}catch(e){}
+function sg(k){try{return store&&store.getItem(k)}catch(e){return null}}
+function ss(k,v){try{store&&store.setItem(k,v)}catch(e){}}
+all(".langs a").forEach(function(x){x.addEventListener("click",function(){ss("cp_lang",x.getAttribute("data-l"))})});
+var want=qs.get("lang");
+if(want&&want!==cur&&alt[want]&&/^(pt|es|en)$/.test(want)){location.replace(alt[want]+location.search+location.hash)}
+else if(cur==="en"&&!sg("cp_lang")&&!want){
+  var langs=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||navigator.userLanguage||""]);
+  var pick=null;
+  for(var i=0;i<langs.length&&!pick;i++){var c=String(langs[i]).toLowerCase().slice(0,2);if(c==="pt"&&alt.pt)pick="pt";else if(c==="es"&&alt.es)pick="es";else if(c==="en")break}
+  if(pick){
+    var TXT={pt:["Ver esta página em português?","Sim, português"],es:["¿Ver esta página en español?","Sí, español"]}[pick];
+    var bar=document.createElement("div");bar.className="langbar";
+    var sp=document.createElement("span");sp.textContent=TXT[0];
+    var go=document.createElement("a");go.href=alt[pick]+location.search+location.hash;go.textContent=TXT[1];go.addEventListener("click",function(){ss("cp_lang",pick)});
+    var x=document.createElement("button");x.type="button";x.setAttribute("aria-label","×");x.textContent="×";x.addEventListener("click",function(){ss("cp_lang","en");if(bar.parentNode)bar.parentNode.removeChild(bar)});
+    bar.appendChild(sp);bar.appendChild(go);bar.appendChild(x);
+    document.body.insertBefore(bar,document.body.firstChild);
+  }
+}
+}catch(e){}
 })();
