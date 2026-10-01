@@ -46,7 +46,11 @@ function relay(ev,cid,payout){
   seen.set(key,Date.now());if(seen.size>100000)seen.delete(seen.keys().next().value);
   const url=TPL.replace('{aid}',encodeURIComponent(E.PROP_AID||'')).replace('{pid}',encodeURIComponent(E.PROP_PID||'')).replace('{tid}',encodeURIComponent(E.PROP_TID||''))
     .replace('{cid}',encodeURIComponent(cid)).replace('{goalq}',g==='main'?'':'&goal='+encodeURIComponent(g)).replace('{payoutq}',payout?'&payout='+encodeURIComponent(payout):'');
-  fire(url,2,(err,code,body)=>{console.log('[pb]',ev,'cid='+cid,'goal='+g,err?'ERR '+err.message:'HTTP '+code+' '+String(body).replace(/\s+/g,' ').slice(0,60));if(err||code>=400)seen.delete(key)});
+  fire(url,2,(err,code,body)=>{
+    const show=(u,e,c,b)=>console.log('[pb]',ev,'cid='+cid,'goal='+g,e?'ERR '+e.message:'HTTP '+c,'body='+JSON.stringify(String(b||'').replace(/\s+/g,' ').slice(0,200)),'url='+u);
+    show(url,err,code,body);
+    if(!err&&code>=400&&url.startsWith('https:')){const u2=url.replace(/^https:/,'http:');fire(u2,1,(e2,c2,b2)=>{show(u2,e2,c2,b2);if(e2||c2>=400)seen.delete(key)});return}
+    if(err||code>=400)seen.delete(key)});
   return {ok:true};
 }
 function handleTrack(req,res,u){
