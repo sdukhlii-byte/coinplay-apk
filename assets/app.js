@@ -1,6 +1,8 @@
 (function(){
 var C=window.CFG||{},L=window.I18N||{},qs;
 function tx(k,d){return L[k]||d}
+var VAR="";try{VAR=document.body.getAttribute("data-v")||""}catch(e){}
+function U(k){return(VAR==="bet"&&C["BET_"+k])||C[k]}
 try{qs=new URLSearchParams(location.search)}catch(e){qs={get:function(){return null},forEach:function(){}}}
 var ua=navigator.userAgent||"";
 var CID="";
@@ -27,7 +29,7 @@ function track(ev){if(!C.TRACK_URL||!CID)return;var u=C.TRACK_URL.replace("{clic
 try{
 var map=[["js-apk","APK_URL","apk"],["js-web","WEB_URL","web"],["js-tg","TG_URL","tg"],["js-x","X_URL","x"],["js-ig","IG_URL","ig"]];
 map.forEach(function(m){all("."+m[0]).forEach(function(a){
-  if(C[m[1]]){a.href=wp(C[m[1]])}
+  if(U(m[1])){a.href=wp(U(m[1]))}
   a.addEventListener("click",function(){var ev=m[2];if(ev==="apk"&&!isAndroid)ev=isIOS?"web":"other";track(ev);if(m[2]==="apk")showAfter()});
   if(m[2]!=="apk"){a.target="_blank";a.rel="noopener"}
 })});
@@ -46,7 +48,7 @@ var note=document.getElementById("osnote");
 if(isIOS){
   document.documentElement.className+=" is-ios";
   all(".js-apk").forEach(function(a){
-    a.href=wp(C.WEB_URL||"#");a.target="_blank";a.rel="noopener";
+    a.href=wp(U("WEB_URL")||"#");a.target="_blank";a.rel="noopener";
     a.textContent=a.classList.contains("hbtn")?tx("play_short","Play"):tx("play_long","▶ Play now");
   });
   var sm=document.querySelector(".sticky small");if(sm)sm.innerHTML=tx("sticky_web","CoinPlay<br>Play in browser");
