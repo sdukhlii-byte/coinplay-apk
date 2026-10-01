@@ -2,8 +2,8 @@
 window.CFG = {
   APK_URL: "https://promotioncoinplay.com/L?tag=d_5250688m_67365c_stslnd13&site=5250688&ad=67365",  // партнёрская ссылка, сразу отдаёт APK
   WEB_URL: "https://promotioncoinplay.com/L?tag=d_6159212m_57511c_apk_land1&site=6159212&ad=57511",         // основной сайт / трекер-ссылка
-  BET_APK_URL: "",   // ссылка для сплит-теста на странице /bet.html (пусто = как APK_URL)
-  BET_WEB_URL: "",   // то же для кнопок "в браузере" (пусто = как WEB_URL)
+  BET_APK_URL: "https://promotioncoinplay.com/L?tag=d_5250688m_67365c_BET_APK_URL&site=5250688&ad=67365",   // ссылка для сплит-теста на странице /bet.html (пусто = как APK_URL)
+  BET_WEB_URL: "https://promotioncoinplay.com/L?tag=d_5250688m_67365c_BET_WEB_URL&site=5250688&ad=67365",   // то же для кнопок "в браузере" (пусто = как WEB_URL)
   TG_URL:  "https://t.me/thecoinplay",       // Telegram
   X_URL:   "https://x.com/thecoinplay",
   IG_URL:  "https://www.instagram.com/coinplayofficial/",

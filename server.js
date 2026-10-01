@@ -3,10 +3,15 @@ const http=require('http'),https=require('https'),fs=require('fs'),path=require(
 const ROOT=__dirname,PORT=process.env.PORT||3000;
 const MIME={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'application/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.ico':'image/x-icon','.xml':'application/xml','.txt':'text/plain; charset=utf-8','.json':'application/json','.woff2':'font/woff2','.apk':'application/vnd.android.package-archive'};
 const GZ=new Set(['.html','.css','.js','.svg','.xml','.txt','.json']);
+/* Railway Variables -> browser config. Only these keys, only http(s) URLs. */
+const CFG_ENV=['APK_URL','WEB_URL','TG_URL','X_URL','IG_URL','BET_APK_URL','BET_WEB_URL'];
+const CFG_EXTRA=CFG_ENV.filter(k=>/^https?:\/\//.test(process.env[k]||'')).map(k=>'window.CFG.'+k+'='+JSON.stringify(process.env[k].trim()).replace(/</g,'\\u003c')+';').join('\n');
+const CFG_FILE=path.join(ROOT,'assets','config.js');
 function send(req,res,file,status){
   const ext=path.extname(file).toLowerCase();
   fs.readFile(file,(e,buf)=>{
     if(e){res.writeHead(500);return res.end('Server error')}
+    if(CFG_EXTRA&&file===CFG_FILE)buf=Buffer.concat([buf,Buffer.from('\n'+CFG_EXTRA+'\n')]);
     const h={'Content-Type':MIME[ext]||'application/octet-stream','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin',
       'Cache-Control':(ext==='.html'||ext==='.css'||ext==='.js')?'no-cache':'public, max-age=86400'};
     if(GZ.has(ext)&&/\bgzip\b/.test(req.headers['accept-encoding']||'')){buf=zlib.gzipSync(buf);h['Content-Encoding']='gzip';h['Vary']='Accept-Encoding'}
