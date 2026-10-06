@@ -91,13 +91,13 @@ function sg(k){try{return store&&store.getItem(k)}catch(e){return null}}
 function ss(k,v){try{store&&store.setItem(k,v)}catch(e){}}
 all(".langs a").forEach(function(x){x.addEventListener("click",function(){ss("cp_lang",x.getAttribute("data-l"))})});
 var want=qs.get("lang");
-if(want&&want!==cur&&alt[want]&&/^(pt|es|tr|vi|en)$/.test(want)){location.replace(alt[want]+location.search+location.hash)}
+if(want&&want!==cur&&alt[want]&&/^(pt|es|tr|vi|de|en)$/.test(want)){location.replace(alt[want]+location.search+location.hash)}
 else if(cur==="en"&&!sg("cp_lang")&&!want){
   var langs=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||navigator.userLanguage||""]);
   var pick=null;
-  for(var i=0;i<langs.length&&!pick;i++){var c=String(langs[i]).toLowerCase().slice(0,2);if(c==="pt"&&alt.pt)pick="pt";else if(c==="es"&&alt.es)pick="es";else if(c==="tr"&&alt.tr)pick="tr";else if(c==="vi"&&alt.vi)pick="vi";else if(c==="en")break}
+  for(var i=0;i<langs.length&&!pick;i++){var c=String(langs[i]).toLowerCase().slice(0,2);if(c==="pt"&&alt.pt)pick="pt";else if(c==="es"&&alt.es)pick="es";else if(c==="tr"&&alt.tr)pick="tr";else if(c==="vi"&&alt.vi)pick="vi";else if(c==="de"&&alt.de)pick="de";else if(c==="en")break}
   if(pick){
-    var TXT={pt:["Ver esta página em português?","Sim, português"],es:["¿Ver esta página en español?","Sí, español"],tr:["Bu sayfayı Türkçe görmek ister misiniz?","Evet, Türkçe"],vi:["Xem trang này bằng tiếng Việt?","Có, tiếng Việt"]}[pick];
+    var TXT={pt:["Ver esta página em português?","Sim, português"],es:["¿Ver esta página en español?","Sí, español"],tr:["Bu sayfayı Türkçe görmek ister misiniz?","Evet, Türkçe"],vi:["Xem trang này bằng tiếng Việt?","Có, tiếng Việt"],de:["Diese Seite auf Deutsch ansehen?","Ja, Deutsch"]}[pick];
     var bar=document.createElement("div");bar.className="langbar";
     var sp=document.createElement("span");sp.textContent=TXT[0];
     var go=document.createElement("a");go.href=alt[pick]+location.search+location.hash;go.textContent=TXT[1];go.addEventListener("click",function(){ss("cp_lang",pick)});
