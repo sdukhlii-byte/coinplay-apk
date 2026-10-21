@@ -25,19 +25,20 @@ var isIOS=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTou
 try{var fo=qs.get("os");if(fo==="android"){isAndroid=true;isIOS=false}else if(fo==="ios"){isIOS=true;isAndroid=false}}catch(e){}
 function all(sel){return Array.prototype.slice.call(document.querySelectorAll(sel))}
 function wp(u){var sp=C.SUBID_PARAM&&CID;if(!sp&&(!C.PASS_PARAMS||!location.search))return u;try{var x=new URL(u,location.href);if(sp)x.searchParams.set(C.SUBID_PARAM,CID);if(C.PASS_PARAMS&&location.search)qs.forEach(function(v,k){if(!x.searchParams.has(k))x.searchParams.set(k,v)});return x.toString()}catch(e){return u}}
+function oai(ev){try{if(!window.oaiq)return;if(ev==="apk")oaiq("measure","lead_created",{type:"customer_action"});else if(ev==="web"||ev==="other")oaiq("measure","custom",{type:"custom"},{custom_event_name:"web_click"})}catch(e){}}
 function track(ev){if(!C.TRACK_URL||!CID)return;var u=C.TRACK_URL.replace("{clickid}",encodeURIComponent(CID)).replace("{event}",encodeURIComponent(ev));try{if(!(navigator.sendBeacon&&navigator.sendBeacon(u)))(new Image()).src=u}catch(e){try{(new Image()).src=u}catch(e2){}}}
 try{
 var map=[["js-apk","APK_URL","apk"],["js-web","WEB_URL","web"],["js-tg","TG_URL","tg"],["js-x","X_URL","x"],["js-ig","IG_URL","ig"]];
 map.forEach(function(m){all("."+m[0]).forEach(function(a){
   if(U(m[1])){a.href=wp(U(m[1]))}
-  a.addEventListener("click",function(){var ev=m[2];if(ev==="apk"&&!isAndroid)ev=isIOS?"web":"other";track(ev);if(m[2]==="apk")showAfter()});
+  a.addEventListener("click",function(){var ev=m[2];if(ev==="apk"&&!isAndroid)ev=isIOS?"web":"other";if(m[2]==="apk"||m[2]==="web")oai(ev);track(ev);if(m[2]==="apk")showAfter()});
   if(m[2]!=="apk"){a.target="_blank";a.rel="noopener"}
 })});
 [["f-ver",C.VERSION],["f-size",C.SIZE],["f-upd",C.UPDATED]].forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;if(p[1])el.textContent=p[1];else{el.style.display="none";if(el.previousElementSibling)el.previousElementSibling.style.display="none"}});
 var fb=document.getElementById("facts");
 if(fb){var FF=L.facts?L.facts.map(function(p){return{label:p[0],value:p[1]}}):C.FACTS;if(FF&&FF.length){FF.forEach(function(f){var d=document.createElement("div");d.className="fact";var s=document.createElement("small"),b=document.createElement("strong");s.textContent=f.label;b.textContent=f.value;d.appendChild(s);d.appendChild(b);fb.appendChild(d)});var nt=document.createElement("p");nt.className="small center factsnote";nt.textContent=tx("factsnote","18+. Bonus terms and wagering requirements apply. Check the current terms on the CoinPlay website before you deposit.");fb.parentNode.insertBefore(nt,fb.nextSibling)}else fb.style.display="none"}
 var bn=document.getElementById("bonus");
-if(bn&&C.BONUS_TEXT){bn.style.display="block";bn.textContent=C.BONUS_TEXT+" ";var l=document.createElement("a");l.className="js-apk";l.href=wp(C.APK_URL);l.textContent=C.BONUS_LINK_TEXT||"";l.addEventListener("click",function(){track("apk");showAfter()});bn.appendChild(l)}
+if(bn&&C.BONUS_TEXT){bn.style.display="block";bn.textContent=C.BONUS_TEXT+" ";var l=document.createElement("a");l.className="js-apk";l.href=wp(C.APK_URL);l.textContent=C.BONUS_LINK_TEXT||"";l.addEventListener("click",function(){oai("apk");track("apk");showAfter()});bn.appendChild(l)}
 var b=document.getElementById("burger"),nv=document.getElementById("nav");
 if(b&&nv)b.addEventListener("click",function(){nv.classList.toggle("open");b.setAttribute("aria-expanded",nv.classList.contains("open"))});
 }catch(e){}
